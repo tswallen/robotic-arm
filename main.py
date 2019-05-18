@@ -1,9 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 from multiprocessing import Process
 from tkinter import *
 
 master = Tk()
+
+fig = plt.figure()
+ax1 = fig.add_subplot(1,1,1)
 
 joints = np.array(
     [
@@ -27,19 +31,14 @@ points = np.zeros(
     ]
 )
 
-w = Scale(master, from_=0, to=100, variable=joints[1][0])
-w.pack()
-
-l = Label(master, textvariable=joints[1][0])
-l.pack()
-
-def test():
+def test(test):
+    joints[1][0] = w.get()
     print(joints)
 
-b = Button(master, command=test)
-b.pack()
+w = Scale(master, from_=0, to=100, variable=joints[1][0], command=test)
+w.pack()
 
-def renderVisualisation():
+def renderVisualisation(test):
     x_cache, y_cache = 0.0, 0.0
     for index, (angle, length) in np.ndenumerate(joints):
 
@@ -51,10 +50,10 @@ def renderVisualisation():
         x_cache, y_cache = x, y
 
     x, y = zip(*points)
+    ax1.clear()
+    ax1.plot(x,y)
     plt.xlim(0,10)
     plt.ylim(0,10)
-    plt.plot(x, y)
-    plt.show()
 
 def renderUI():
     mainloop()
@@ -62,5 +61,7 @@ def renderUI():
 def moveJoint(joint, value):
     joints[(joint,)][0] = value
 
-if __name__ == '__main__':
-    Process(target=renderVisualisation).start()
+ani = animation.FuncAnimation(fig, renderVisualisation, interval=10)
+plt.show()
+renderUI()
+
