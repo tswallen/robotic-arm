@@ -31,12 +31,20 @@ points = np.zeros(
     ]
 )
 
-def test(test):
-    joints[1][0] = w.get()
-    print(joints)
+shoulder = Scale(master, from_=0, to=360, variable=joints[1][0], orient=HORIZONTAL, command=lambda value: setValue(1, value))
+shoulder.set(joints[1][0])
+shoulder.pack()
 
-w = Scale(master, from_=0, to=100, variable=joints[1][0], command=test)
-w.pack()
+elbow = Scale(master, from_=0, to=360, variable=joints[2][0], orient=HORIZONTAL, command=lambda value: setValue(2, value))
+elbow.set(joints[2][0])
+elbow.pack()
+
+wrist = Scale(master, from_=0, to=360, variable=joints[3][0], orient=HORIZONTAL, command=lambda value: setValue(3, value))
+wrist.set(joints[3][0])
+wrist.pack()
+
+def setValue(index, value):
+    joints[index][0] = value
 
 def renderVisualisation(test):
     x_cache, y_cache = 0.0, 0.0
